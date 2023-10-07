@@ -1,0 +1,61 @@
+# Binary and Executable Files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Compiled Go Binaries
+/bin/
+
+# IDE and Editor-specific Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temporary Files
+*~
+*.swp
+*.swo
+
+# Build Output
+/pkg/
+/vendor/
+
+# Dependency Management Files
+/go.mod
+/go.sum
+
+# Logs
+/log/
+
+# Editor Backup Files
+*#
+
+# Configuration Files (e.g., .env)
+.env
+.env.local
+
+# Database Files
+*.db
+
+# Sensitive Information (e.g., API keys)
+.secrets
+
+# IDE Configuration (e.g., .DS_Store on macOS)
+.DS_Store
+
+# Compiled Documentation
+/docs/_site/
+
+# Testing and Benchmarking Data
+/testdata/
+
+# User-specific Configuration Files
+~/.config/
+~/.local/
+
