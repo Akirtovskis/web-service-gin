@@ -26,9 +26,6 @@
 /pkg/
 /vendor/
 
-# Dependency Management Files
-/go.mod
-/go.sum
 
 # Logs
 /log/
@@ -58,4 +55,3 @@
 # User-specific Configuration Files
 ~/.config/
 ~/.local/
-
