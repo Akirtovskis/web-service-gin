@@ -38,7 +38,7 @@
 .env.local
 
 # Database Files
-*.db
+*data
 
 # Sensitive Information (e.g., API keys)
 .secrets
