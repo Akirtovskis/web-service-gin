@@ -1,28 +1,30 @@
 package config
 
 import (
-	"log"
-	"web-service-gin/models"
+	"database/sql"
+	"fmt"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	_ "github.com/lib/pq"
 )
 
-var DB *gorm.DB
+func Connect() (*sql.DB, error) {
+	// connection string details
+	dsn := "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
 
-func Connect() {
-	// The hostname 'db' matches the service name in the 'docker-compose.yml' file
-	dsn := "postgres://postgres:postgres@db:5432/postgres"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// trying to connect to the database
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatal("Database connection error:", err)
+		return nil, fmt.Errorf("error opening database: %w", err)
 	}
 
-	// Perform your migrations and other database setup here
-	err = db.AutoMigrate(&models.Album{})
+	// pinging the database
+	err = db.Ping()
 	if err != nil {
-		log.Fatal("Database migration error:", err)
+		db.Close()
+		return nil, fmt.Errorf("error connecting to the database: %w", err)
 	}
 
-	DB = db
+	fmt.Println("Successfully connected to the database!")
+
+	return db, nil
 }
