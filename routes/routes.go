@@ -28,5 +28,5 @@ func UseRoute(router *gin.Engine) {
 	router.NoRoute(func(c *gin.Context) {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Invalid path"})
 	})
-	router.Run("localhost:8080")
+	router.Run(":8080")
 }

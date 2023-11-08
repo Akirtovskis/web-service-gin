@@ -11,10 +11,18 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	db, err := gorm.Open(postgres.Open("postgres://postgres:postgres@localhost:5432/postgres"), &gorm.Config{})
+	// The hostname 'db' matches the service name in the 'docker-compose.yml' file
+	dsn := "postgres://postgres:postgres@db:5432/postgres"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Database connection error:", err)
 	}
-	db.AutoMigrate(&models.Album{})
+
+	// Perform your migrations and other database setup here
+	err = db.AutoMigrate(&models.Album{})
+	if err != nil {
+		log.Fatal("Database migration error:", err)
+	}
+
 	DB = db
 }
