@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"web-service-gin/config"
 	"web-service-gin/routes"
 
@@ -8,8 +9,14 @@ import (
 )
 
 func main() {
-	config.Connect()
+	db, err := config.Connect()
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	defer db.Close()
+
 	router := gin.Default()
-	routes.UseRoute(router)
-	router.Run("localhost:8080")
+	routes.UseRoute(router, db)
+	router.Run(":8080")
 }
