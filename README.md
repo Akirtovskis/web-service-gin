@@ -1,5 +1,9 @@
 # web-service-gin
 
+- using database/sql lib to connect to PostgreSQL db
+- using gin gonic for routing
+- using docker-compose to set up app and db
+
 ## To-Do List
 
 - Dockerize the app [x]
