@@ -10,30 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// albums slice to seed record album data.
-// var albums = []models.Album{
-// 	{Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-// 	{Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-// 	{Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
-// }
-
 func getHealth(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "ok", "timestap": time.Now().Format(time.RFC3339)})
 }
 
 func UseRoute(router *gin.Engine, db *sql.DB) {
+
 	// Set up the album service.
 	albumService := album.NewAlbumService(db)
 
-	router.GET("/albums", func(c *gin.Context) { albumService.GetAlbums(c, db) })
-	// TODO THESE ROUTES ARE NOT IMPLEMENTED YET
-	// ------------------------------------------------
-	// router.POST("/albums", albumService.CreateAlbum)
-	// router.DELETE("/albums/:id", albumService.DeleteAlbum)
-	// router.GET("/albums/:id", albumService.GetAlbumById)
+	// v important to get more complex routes in the beginning so they are not overwritten by simpler routes
+	router.GET("/albums/:id", func(c *gin.Context) { albumService.GetAlbumById(c) })
+	router.GET("/albums", func(c *gin.Context) { albumService.GetAlbums(c) })
+	router.POST("/albums", func(c *gin.Context) { albumService.CreateAlbum(c) })
+	router.DELETE("/albums/:id", func(c *gin.Context) { albumService.DeleteAlbum(c) })
+
 	router.GET("/health", getHealth)
 	router.NoRoute(func(c *gin.Context) {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Invalid path"})
 	})
-	router.Run(":8080")
+
 }

@@ -9,13 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *AlbumService) GetAlbums(c *gin.Context, db *sql.DB) {
+func (s *AlbumService) GetAlbums(c *gin.Context) {
 	var albums []models.Album
 
-	rows, err := db.Query("SELECT id, title, artist, price FROM albums")
+	rows, err := s.DB.Query("SELECT id, title, artist, price FROM albums")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// need to call defer rows.Close on query, but not on query row
 	defer rows.Close()
 
 	for rows.Next() {
@@ -34,11 +36,24 @@ func (s *AlbumService) GetAlbums(c *gin.Context, db *sql.DB) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
-// old ORM integration should be migrated to SQL
-// ------------------------------------------------
-// // get album by id
-// func GetAlbumById(c *gin.Context) {
-// 	var album models.Album
-// 	config.DB.Where("id = ?", c.Param("id")).Find(&album)
-// 	c.IndentedJSON(http.StatusOK, album)
-// }
+// GetAlbumById fetches an album by its ID
+func (s *AlbumService) GetAlbumById(c *gin.Context) {
+	var album models.Album
+	id := c.Param("id")
+
+	// the $1 means to interpolate the first value after the query string
+	row := s.DB.QueryRow("SELECT id, title, artist, price FROM albums WHERE id = $1", id)
+
+	// Scan the result into the Album struct
+	err := row.Scan(&album.ID, &album.Title, &album.Artist, &album.Price)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+			return
+		}
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "database error"})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, album)
+}
