@@ -15,9 +15,11 @@ func getHealth(c *gin.Context) {
 }
 
 func UseRoute(router *gin.Engine, db *sql.DB) {
+	// creates an instance of sql album repository
+	sqlRepo := album.NewSqlAlbumRepository(db)
 
-	// Set up the album service.
-	albumService := album.NewAlbumService(db)
+	// sets up the service with the sql album repository
+	albumService := album.SqlAlbumRepository(*sqlRepo)
 
 	// v important to get more complex routes in the beginning so they are not overwritten by simpler routes
 	router.GET("/albums/:id", func(c *gin.Context) { albumService.GetAlbumById(c) })

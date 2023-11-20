@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *AlbumService) DeleteAlbum(c *gin.Context) {
+func (r *SqlAlbumRepository) DeleteAlbum(c *gin.Context) {
 	// Convert the 'id' URL parameter to an integer
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -16,7 +16,7 @@ func (s *AlbumService) DeleteAlbum(c *gin.Context) {
 	}
 
 	// Prepare the SQL statement
-	stmt, err := s.DB.Prepare("DELETE FROM albums WHERE id = $1")
+	stmt, err := r.DB.Prepare("DELETE FROM albums WHERE id = $1")
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "database error"})
 		return
