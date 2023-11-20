@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *AlbumService) CreateAlbum(c *gin.Context) {
+func (r *SqlAlbumRepository) CreateAlbum(c *gin.Context) {
 	var newAlbum models.Album
 
 	// Bind the incoming JSON to newAlbum
@@ -18,7 +18,7 @@ func (s *AlbumService) CreateAlbum(c *gin.Context) {
 
 	// Prepare and execute the SQL statement with RETURNING id
 	query := "INSERT INTO albums (title, artist, price) VALUES ($1, $2, $3) RETURNING id"
-	err := s.DB.QueryRow(query, newAlbum.Title, newAlbum.Artist, newAlbum.Price).Scan(&newAlbum.ID)
+	err := r.DB.QueryRow(query, newAlbum.Title, newAlbum.Artist, newAlbum.Price).Scan(&newAlbum.ID)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "database error from preparing and executing"})
 		return

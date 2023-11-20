@@ -9,10 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *AlbumService) GetAlbums(c *gin.Context) {
+func (r *SqlAlbumRepository) GetAlbums(c *gin.Context) {
 	var albums []models.Album
 
-	rows, err := s.DB.Query("SELECT id, title, artist, price FROM albums")
+	rows, err := r.DB.Query("SELECT id, title, artist, price FROM albums")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,12 +37,12 @@ func (s *AlbumService) GetAlbums(c *gin.Context) {
 }
 
 // GetAlbumById fetches an album by its ID
-func (s *AlbumService) GetAlbumById(c *gin.Context) {
+func (r *SqlAlbumRepository) GetAlbumById(c *gin.Context) {
 	var album models.Album
 	id := c.Param("id")
 
 	// the $1 means to interpolate the first value after the query string
-	row := s.DB.QueryRow("SELECT id, title, artist, price FROM albums WHERE id = $1", id)
+	row := r.DB.QueryRow("SELECT id, title, artist, price FROM albums WHERE id = $1", id)
 
 	// Scan the result into the Album struct
 	err := row.Scan(&album.ID, &album.Title, &album.Artist, &album.Price)
